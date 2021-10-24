@@ -1,7 +1,6 @@
 #include <range.cpp>
 #include <output.cpp>
 
-
 class PlaneHardware
 {
 public:
@@ -24,15 +23,25 @@ class Plane
 	PlaneHardware planeHardware;
 
 public:
-	Plane(PlaneHardware planeHardware){
-		this -> planeHardware = planeHardware;
+	Plane(PlaneHardware planeHardware)
+	{
+		this->planeHardware = planeHardware;
 	}
 
-	Plane(){
+	Plane()
+	{
 		planeHardware = PlaneHardware();
 	}
 
-	void move(double throttle, double aileron, double elevator, double rudder){
+	/**
+	 * sets all the plane's control surfaces and motors based on input parameters
+	 * @param throttle the throttle(controls speed) of the plane: -1 to 1
+	 * @param aileron the aileron(controls roll) of the plane: -1 to 1
+	 * @param elevator the elevator(controls pitch) of the plane: -1 to 1
+	 * @param rudder the rudder(controls heading) of the plane: -1 to 1
+	 */
+	void move(double throttle, double aileron, double elevator, double rudder)
+	{
 		planeHardware.throttle1.set(throttle);
 		planeHardware.throttle2.set(throttle);
 		planeHardware.aileron1.set(aileron);
