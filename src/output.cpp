@@ -1,5 +1,6 @@
 #include <Servo.h>
 #include <range.cpp>
+#include <Arduino.h>
 
 /**
  * class to hold Servo and Range, plus apply flips if specified 
@@ -37,6 +38,7 @@ public:
 	 */
 	void update(int pin, Range range, bool flip)
 	{
+		pinMode(pin, OUTPUT);
 		servo = Servo();
 		servo.attach(pin);
 		this->range = range;
@@ -58,6 +60,6 @@ public:
 	 */
 	double get()
 	{
-		return (flip) ? -range.scaleTo(servo.readMicroseconds()) : range.scaleTo(servo.readMicroseconds());
+		return range.scaleTo((flip) ? -servo.readMicroseconds() : -servo.readMicroseconds());
 	}
 };
