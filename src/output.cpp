@@ -1,5 +1,6 @@
 #include <Servo.h>
 #include <range.cpp>
+#include <utils.cpp>
 #include <Arduino.h>
 
 /**
@@ -17,21 +18,14 @@ public:
 	{
 		update(pin, Range(1000, 2000), false);
 	}
-	Output(int pin, Range range)
-	{
-		update(pin, range, false);
-	}
-	Output(int pin, bool flip)
-	{
-		update(pin, Range(1000, 2000), flip);
-	}
+	
 	Output(int pin, Range range, bool flip)
 	{
 		update(pin, range, flip);
 	}
 
 	/**
-	 * updates all the values of Output(also used to construct instance)
+	 * updates all the values of output(also used to construct instance)
 	 * @param pin the pin the Output is attached to
 	 * @param range the microsecond range of the Output
 	 * @param flip if the servo direction sould be fliped
@@ -46,20 +40,31 @@ public:
 	}
 
 	/**
-	 * set the value of the Output
+	 * set the value of the output with optional clamping to min and max from range
 	 * @param pos the set value from -1 to 1
 	 */
-	void set(double pos)
+	void set(double pos, bool clamp)
 	{
-		servo.writeMicroseconds((int)range.scaleFrom((flip) ? -pos : pos));
+		if(clamp)
+			pos = Utils::clamp(pos);
+		servo.writeMicroseconds((int)range.scaleFrom(Utils::flip(pos, flip)));
 	}
 
 	/**
-	 * get the set value of the Output
+	 * get the set value of the output
 	 * @return set value from -1 to 1
 	 */
 	double get()
 	{
-		return range.scaleTo((flip) ? -servo.readMicroseconds() : -servo.readMicroseconds());
+		return Utils::flip(range.scaleTo(servo.readMicroseconds()), flip);
+	}
+
+	/**
+	 * gets the set microseconds of the output
+	 * @return the microseconds of the output
+	 */
+	int getRaw()
+	{
+		return servo.readMicroseconds();
 	}
 };

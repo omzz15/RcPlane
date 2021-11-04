@@ -3,6 +3,9 @@
 #include <controller.cpp>
 #include <EnableInterrupt.h>
 
+#define outPin 3
+int out = 0;
+
 Controller controller;
 
 void calcCH1(){controller.CH1.calcInput();}
@@ -23,22 +26,41 @@ void setup()
 	enableInterrupt(controller.CH4.getPin(), calcCH4, CHANGE);
 	enableInterrupt(controller.CH5.getPin(), calcCH5, CHANGE);
 	enableInterrupt(controller.CH6.getPin(), calcCH6, CHANGE);
+
+	pinMode(outPin, OUTPUT);
 }
 
 
 
 void loop()
 {
-	while(!controller.controllerConnected()){
+	if(!controller.isAllStarted()){
+		out = 0;
+		analogWrite(outPin, out);
+	while(!controller.isAllStarted()){
 		Serial.println("connect controller!!");
-		delay(1000);
+		delay(100);
+	}
 	}
 
-	while(controller.controllerDead()){
-		Serial.println("reconnect controller!!");
-		delay(500);
+	if(!controller.isAllAlive()){
+		out = 0;
+		analogWrite(outPin, out);
+	while(!controller.isAllAlive()){
+		Serial.println("connect controller!!");
+		delay(100);
+	}
 	}
 
+	if(controller.CH3.hasNewData()){
+		out = constrain((controller.CH3.getValue() + 0.95) * 135, 0, 255);
+		Serial.print("output: ");
+		Serial.println(out);
+	}
+
+	analogWrite(outPin, out);
+
+/*
 	if(controller.allNewDataAvalible()){
 	Serial.print(controller.CH1.getValue());
 	Serial.print("\t");
@@ -54,4 +76,5 @@ void loop()
 	}
 
 	delay(100);
+*/
 }
