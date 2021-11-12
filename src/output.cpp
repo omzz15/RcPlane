@@ -9,16 +9,26 @@
 class Output
 {
 private:
+	//the range of the output
 	Range range;
+	//whether or not the output should be flipped
 	bool flip;
+	//sends the pwm output 
 	Servo servo;
 
 public:
+	/**
+	 * basic constructor for Output that just requires pin(other values are set to default)
+	 * @param pin the pin you want to control
+	 */
 	Output(int pin)
 	{
 		update(pin, Range(1000, 2000), false);
 	}
 	
+	/**
+	 * an advanced constructor that allows you to set all parameters of Output
+	 */
 	Output(int pin, Range range, bool flip)
 	{
 		update(pin, range, flip);
